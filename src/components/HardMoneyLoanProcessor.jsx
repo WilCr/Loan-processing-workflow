@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign, BookOpen } from 'lucide-react';
 
 export default function HardMoneyLoanProcessor() {
   const [currentStage, setCurrentStage] = useState(0);
@@ -236,8 +237,19 @@ Focus on rapid closing requirements.`
       <div className="container mx-auto p-6 max-w-7xl">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Hard Money Loan Processor AI</h1>
-          <p className="text-slate-600">AI-powered workflow assistant for hard money lending</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-800 mb-2">Hard Money Loan Processor AI</h1>
+              <p className="text-slate-600">AI-powered workflow assistant for hard money lending</p>
+            </div>
+            <Link 
+              to="/resources"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <BookOpen className="w-5 h-5" />
+              <span>Resources</span>
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
