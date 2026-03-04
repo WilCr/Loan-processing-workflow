@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign, BookOpen } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink } from 'lucide-react';
 
 export default function HardMoneyLoanProcessor() {
+  const resourcesRef = useRef(null);
   const [currentStage, setCurrentStage] = useState(0);
   const [loanData, setLoanData] = useState({
     propertyAddress: '',
@@ -16,6 +16,10 @@ export default function HardMoneyLoanProcessor() {
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [stageNotes, setStageNotes] = useState({});
+
+  const scrollToResources = () => {
+    resourcesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   const stages = [
     { id: 0, name: 'Application & Docs', icon: FileText, color: 'blue' },
@@ -242,13 +246,13 @@ Focus on rapid closing requirements.`
               <h1 className="text-3xl font-bold text-slate-800 mb-2">Hard Money Loan Processor AI</h1>
               <p className="text-slate-600">AI-powered workflow assistant for hard money lending</p>
             </div>
-            <Link 
-              to="/resources"
+            <button
+              onClick={scrollToResources}
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <BookOpen className="w-5 h-5" />
               <span>Resources</span>
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -426,6 +430,68 @@ Focus on rapid closing requirements.`
                     {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Resources Section */}
+        <div ref={resourcesRef} className="mt-12 pt-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-slate-800 mb-2">Resources</h2>
+            <p className="text-slate-600">Tools and resources to help optimize your treasury operations and investor relations.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Free Web App Card */}
+            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <Rocket className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2 text-center">Free Web App</h3>
+              <p className="text-slate-600 mb-4 text-center text-sm">
+                Coming soon! A powerful web application to streamline your treasury management workflows.
+              </p>
+              <p className="text-slate-400 text-sm text-center">Available soon</p>
+            </div>
+
+            {/* Knowledge Base Card */}
+            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 via-red-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <Layers className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2 text-center">Knowledge Base</h3>
+              <p className="text-slate-600 mb-4 text-center text-sm">
+                Articles, guides, and best practices for treasury management and investor relations.
+              </p>
+              <p className="text-slate-400 text-sm text-center">Coming soon</p>
+            </div>
+
+            {/* Tools & Templates Card */}
+            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 via-pink-500 to-blue-600 rounded-lg flex items-center justify-center">
+                  <BarChart3 className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2 text-center">Tools & Templates</h3>
+              <p className="text-slate-600 mb-4 text-center text-sm">
+                Downloadable templates and tools to help you manage cash flow, track distributions, and optimize processes.
+              </p>
+              <div className="mt-4">
+                <a 
+                  href="https://tools.curvedspace.us" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 text-blue-600 hover:text-blue-800 font-medium text-sm"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  <span>Access Loan Processor AI Tool</span>
+                </a>
               </div>
             </div>
           </div>
