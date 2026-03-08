@@ -1,6 +1,6 @@
-# Hard Money Loan Processor AI
+# Private Money Loan Processor AI
 
-An AI-powered workflow assistant for hard money lending, built with React and Vite.
+An AI-powered workflow assistant for private money lending, built with React and Vite.
 
 ## Features
 

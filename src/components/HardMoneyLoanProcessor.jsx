@@ -78,7 +78,7 @@ export default function HardMoneyLoanProcessor() {
   };
 
   const stagePrompts = {
-    0: `You are an AI assistant helping a hard money loan processor with the Application & Documentation Collection stage. 
+    0: `You are an AI assistant helping a private money loan processor with the Application & Documentation Collection stage. 
 
 Current loan details:
 - Property: ${loanData.propertyAddress || 'Not specified'}
@@ -94,7 +94,7 @@ Help the processor by:
 
 Be concise and practical.`,
     
-    1: `You are an AI assistant helping with Property Valuation for a hard money loan.
+    1: `You are an AI assistant helping with Property Valuation for a private money loan.
 
 Current loan details:
 - Property: ${loanData.propertyAddress || 'Not specified'}
@@ -109,7 +109,7 @@ Help the processor by:
 
 Provide specific calculations and recommendations.`,
 
-    2: `You are an AI assistant helping with Title & Legal Review for a hard money loan.
+    2: `You are an AI assistant helping with Title & Legal Review for a private money loan.
 
 Property: ${loanData.propertyAddress || 'Not specified'}
 
@@ -119,7 +119,7 @@ Help the processor by:
 3. Reviewing lien priorities
 4. Advising on title insurance requirements
 
-Be specific about hard money lending title requirements.`,
+Be specific about private money lending title requirements.`,
 
     3: `You are an AI assistant helping with Borrower & Exit Strategy Verification.
 
@@ -142,7 +142,7 @@ Current loan details:
 - Property Value: ${loanData.propertyValue || 'Not specified'}
 
 Help the processor by:
-1. Calculating points and fees (typical hard money: 2-4 points)
+1. Calculating points and fees (typical private money: 2-4 points)
 2. Suggesting appropriate interest rates (8-15%)
 3. Recommending loan terms (6-24 months)
 4. Calculating monthly payments
@@ -164,7 +164,7 @@ Be thorough and organized.`,
 Help the processor by:
 1. Creating a closing checklist
 2. Calculating closing costs and prorations
-3. Managing timeline (typical hard money: 7-14 days)
+3. Managing timeline (typical private money: 7-14 days)
 4. Coordinating with title company
 
 Focus on rapid closing requirements.`
@@ -243,8 +243,8 @@ Focus on rapid closing requirements.`
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-800 mb-2">Hard Money Loan Processor AI</h1>
-              <p className="text-slate-600">AI-powered workflow assistant for hard money lending</p>
+              <h1 className="text-3xl font-bold text-slate-800 mb-2">Private Money Loan Processor AI</h1>
+              <p className="text-slate-600">AI-powered workflow assistant for private money lending</p>
             </div>
             <button
               onClick={scrollToResources}
