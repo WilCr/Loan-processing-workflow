@@ -239,6 +239,19 @@ Focus on rapid closing requirements.`
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="container mx-auto p-6 max-w-7xl">
+        {/* CurvedSpace Investment Link */}
+        <div className="mb-4 text-center">
+          <a 
+            href="https://curvedspace.us" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold text-lg transition-colors"
+          >
+            <ExternalLink className="w-5 h-5" />
+            <span>CurvedSpace Investment</span>
+          </a>
+        </div>
+        
         {/* Header */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between">
