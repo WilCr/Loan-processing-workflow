@@ -21,6 +21,38 @@ export default function HardMoneyLoanProcessor() {
     resourcesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  // Format number with commas and decimal point
+  const formatCurrency = (value) => {
+    if (!value) return '';
+    // Remove all non-numeric characters except decimal point
+    const numericValue = value.toString().replace(/[^\d.]/g, '');
+    if (!numericValue) return '';
+    
+    // Split by decimal point
+    const parts = numericValue.split('.');
+    const integerPart = parts[0];
+    const decimalPart = parts[1] || '';
+    
+    // Add commas to integer part
+    const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    
+    // Limit decimal part to 2 digits
+    const formattedDecimal = decimalPart.slice(0, 2);
+    
+    // Combine parts
+    if (formattedDecimal) {
+      return `${formattedInteger}.${formattedDecimal}`;
+    }
+    return formattedInteger;
+  };
+
+  // Parse formatted currency string to number
+  const parseCurrency = (value) => {
+    if (!value) return '';
+    // Remove commas and keep only numbers and decimal point
+    return value.toString().replace(/,/g, '');
+  };
+
   const stages = [
     { id: 0, name: 'Application & Docs', icon: FileText, color: 'blue' },
     { id: 1, name: 'Property Valuation', icon: Home, color: 'green' },
@@ -310,21 +342,27 @@ Focus on rapid closing requirements.`
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Loan Amount ($)</label>
                   <input
-                    type="number"
-                    value={loanData.loanAmount}
-                    onChange={(e) => setLoanData({...loanData, loanAmount: e.target.value})}
+                    type="text"
+                    value={formatCurrency(loanData.loanAmount)}
+                    onChange={(e) => {
+                      const parsed = parseCurrency(e.target.value);
+                      setLoanData({...loanData, loanAmount: parsed});
+                    }}
                     className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="250000"
+                    placeholder="250,000.00"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Property Value ($)</label>
                   <input
-                    type="number"
-                    value={loanData.propertyValue}
-                    onChange={(e) => setLoanData({...loanData, propertyValue: e.target.value})}
+                    type="text"
+                    value={formatCurrency(loanData.propertyValue)}
+                    onChange={(e) => {
+                      const parsed = parseCurrency(e.target.value);
+                      setLoanData({...loanData, propertyValue: parsed});
+                    }}
                     className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="350000"
+                    placeholder="350,000.00"
                   />
                 </div>
                 {calculateLTV() && (
