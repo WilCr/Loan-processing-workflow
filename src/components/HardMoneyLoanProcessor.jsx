@@ -239,19 +239,6 @@ Focus on rapid closing requirements.`
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="container mx-auto p-6 max-w-7xl">
-        {/* CurvedSpace Investment Link */}
-        <div className="mb-4 text-center">
-          <a 
-            href="https://curvedspace.us" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold text-lg transition-colors"
-          >
-            <ExternalLink className="w-5 h-5" />
-            <span>CurvedSpace Investment</span>
-          </a>
-        </div>
-        
         {/* Header */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between">
@@ -259,13 +246,24 @@ Focus on rapid closing requirements.`
               <h1 className="text-3xl font-bold text-slate-800 mb-2">Private Money Loan Processor AI</h1>
               <p className="text-slate-600">AI-powered workflow assistant for private money lending</p>
             </div>
-            <button
-              onClick={scrollToResources}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <BookOpen className="w-5 h-5" />
-              <span>Resources</span>
-            </button>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://curvedspace.us"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <ExternalLink className="w-5 h-5" />
+                <span>CurvedSpace Investment</span>
+              </a>
+              <button
+                onClick={scrollToResources}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <BookOpen className="w-5 h-5" />
+                <span>Resources</span>
+              </button>
+            </div>
           </div>
         </div>
 
