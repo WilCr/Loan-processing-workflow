@@ -470,83 +470,160 @@ Focus on rapid closing requirements.`
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Panel - Loan Info & Stages */}
           <div className="lg:col-span-1 space-y-6">
-            {/* Loan Details */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold text-slate-800 mb-4">Loan Details</h2>
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Borrower Name</label>
-                  <input
-                    type="text"
-                    value={loanData.borrowerName}
-                    onChange={(e) => setLoanData({...loanData, borrowerName: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="John Doe"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Property Address</label>
-                  <input
-                    type="text"
-                    value={loanData.propertyAddress}
-                    onChange={(e) => setLoanData({...loanData, propertyAddress: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="123 Main St, City, ST"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Loan Type</label>
-                  <select
-                    value={loanData.loanType}
-                    onChange={(e) => setLoanData({...loanData, loanType: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="purchase">Purchase</option>
-                    <option value="refinance">Refinance</option>
-                    <option value="fix-and-flip">Fix & Flip</option>
-                    <option value="bridge">Bridge Loan</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Loan Amount ($)</label>
-                  <input
-                    type="text"
-                    value={formatCurrency(loanData.loanAmount)}
-                    onChange={(e) => {
-                      const parsed = parseCurrency(e.target.value);
-                      setLoanData({...loanData, loanAmount: parsed});
-                    }}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="250,000.00"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Property Value ($)</label>
-                  <input
-                    type="text"
-                    value={formatCurrency(loanData.propertyValue)}
-                    onChange={(e) => {
-                      const parsed = parseCurrency(e.target.value);
-                      setLoanData({...loanData, propertyValue: parsed});
-                    }}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="350,000.00"
-                  />
-                </div>
-                {calculateLTV() && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                    <p className="text-sm font-medium text-blue-800">LTV Ratio: {calculateLTV()}%</p>
+            {/* Loan Details and Documents Side by Side */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Loan Details */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-bold text-slate-800 mb-4">Loan Details</h2>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Borrower Name</label>
+                    <input
+                      type="text"
+                      value={loanData.borrowerName}
+                      onChange={(e) => setLoanData({...loanData, borrowerName: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="John Doe"
+                    />
                   </div>
-                )}
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Exit Strategy</label>
-                  <input
-                    type="text"
-                    value={loanData.exitStrategy}
-                    onChange={(e) => setLoanData({...loanData, exitStrategy: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Sale after rehab"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Property Address</label>
+                    <input
+                      type="text"
+                      value={loanData.propertyAddress}
+                      onChange={(e) => setLoanData({...loanData, propertyAddress: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="123 Main St, City, ST"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Loan Type</label>
+                    <select
+                      value={loanData.loanType}
+                      onChange={(e) => setLoanData({...loanData, loanType: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="purchase">Purchase</option>
+                      <option value="refinance">Refinance</option>
+                      <option value="fix-and-flip">Fix & Flip</option>
+                      <option value="bridge">Bridge Loan</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Loan Amount ($)</label>
+                    <input
+                      type="text"
+                      value={formatCurrency(loanData.loanAmount)}
+                      onChange={(e) => {
+                        const parsed = parseCurrency(e.target.value);
+                        setLoanData({...loanData, loanAmount: parsed});
+                      }}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="250,000.00"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Property Value ($)</label>
+                    <input
+                      type="text"
+                      value={formatCurrency(loanData.propertyValue)}
+                      onChange={(e) => {
+                        const parsed = parseCurrency(e.target.value);
+                        setLoanData({...loanData, propertyValue: parsed});
+                      }}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="350,000.00"
+                    />
+                  </div>
+                  {calculateLTV() && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                      <p className="text-sm font-medium text-blue-800">LTV Ratio: {calculateLTV()}%</p>
+                    </div>
+                  )}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Exit Strategy</label>
+                    <input
+                      type="text"
+                      value={loanData.exitStrategy}
+                      onChange={(e) => setLoanData({...loanData, exitStrategy: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Sale after rehab"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Document Upload Section */}
+              <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h2 className="text-xl font-bold text-slate-800 mb-4">Documents</h2>
+                
+                <div className="flex-1 flex flex-col">
+                  {/* Drag and Drop Zone */}
+                  <div
+                    onDragEnter={handleDrag}
+                    onDragLeave={handleDrag}
+                    onDragOver={handleDrag}
+                    onDrop={handleDrop}
+                    className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors flex-shrink-0 ${
+                      dragActive 
+                        ? 'border-blue-500 bg-blue-50' 
+                        : 'border-slate-300 hover:border-slate-400'
+                    }`}
+                  >
+                    <Upload className={`w-8 h-8 mx-auto mb-2 ${dragActive ? 'text-blue-500' : 'text-slate-400'}`} />
+                    <p className="text-sm text-slate-600 mb-2">
+                      Drag and drop files here, or
+                    </p>
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                    >
+                      browse files
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      onChange={handleFileInput}
+                      className="hidden"
+                    />
+                  </div>
+
+                  {/* File List */}
+                  {stageFiles[currentStage] && stageFiles[currentStage].length > 0 && (
+                    <div className="mt-4 flex-1 flex flex-col min-h-0">
+                      <h3 className="text-sm font-semibold text-slate-700 mb-2">
+                        Uploaded Files ({stageFiles[currentStage].length})
+                      </h3>
+                      <div className="flex-1 overflow-y-auto space-y-2">
+                        {stageFiles[currentStage].map((file) => (
+                          <div
+                            key={file.id}
+                            className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                          >
+                            <div className="flex items-center gap-2 flex-1 min-w-0">
+                              <FileText className="w-4 h-4 text-slate-500 flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-slate-800 truncate">
+                                  {file.name}
+                                </p>
+                                <p className="text-xs text-slate-500">
+                                  {formatFileSize(file.size)}
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => removeFile(file.id)}
+                              className="ml-2 p-1 text-slate-400 hover:text-red-600 transition-colors flex-shrink-0"
+                              title="Remove file"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -587,76 +664,6 @@ Focus on rapid closing requirements.`
                   );
                 })}
               </div>
-            </div>
-
-            {/* Document Upload Section */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold text-slate-800 mb-4">Documents</h2>
-              
-              {/* Drag and Drop Zone */}
-              <div
-                onDragEnter={handleDrag}
-                onDragLeave={handleDrag}
-                onDragOver={handleDrag}
-                onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                  dragActive 
-                    ? 'border-blue-500 bg-blue-50' 
-                    : 'border-slate-300 hover:border-slate-400'
-                }`}
-              >
-                <Upload className={`w-8 h-8 mx-auto mb-2 ${dragActive ? 'text-blue-500' : 'text-slate-400'}`} />
-                <p className="text-sm text-slate-600 mb-2">
-                  Drag and drop files here, or
-                </p>
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="text-blue-600 hover:text-blue-700 font-medium text-sm"
-                >
-                  browse files
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  onChange={handleFileInput}
-                  className="hidden"
-                />
-              </div>
-
-              {/* File List */}
-              {stageFiles[currentStage] && stageFiles[currentStage].length > 0 && (
-                <div className="mt-4 space-y-2">
-                  <h3 className="text-sm font-semibold text-slate-700 mb-2">
-                    Uploaded Files ({stageFiles[currentStage].length})
-                  </h3>
-                  {stageFiles[currentStage].map((file) => (
-                    <div
-                      key={file.id}
-                      className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
-                    >
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        <FileText className="w-4 h-4 text-slate-500 flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-slate-800 truncate">
-                            {file.name}
-                          </p>
-                          <p className="text-xs text-slate-500">
-                            {formatFileSize(file.size)}
-                          </p>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => removeFile(file.id)}
-                        className="ml-2 p-1 text-slate-400 hover:text-red-600 transition-colors flex-shrink-0"
-                        title="Remove file"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
 
