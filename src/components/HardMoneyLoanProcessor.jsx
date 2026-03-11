@@ -269,7 +269,7 @@ Focus on rapid closing requirements.`
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-300 to-slate-400">
       <div className="container mx-auto p-6 max-w-7xl">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
