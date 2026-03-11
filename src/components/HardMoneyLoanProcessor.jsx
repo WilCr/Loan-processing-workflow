@@ -469,7 +469,7 @@ Focus on rapid closing requirements.`
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Left Panel - Loan Info & Stages */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-3 space-y-6">
             {/* Loan Details and Documents Side by Side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Loan Details */}
@@ -668,7 +668,7 @@ Focus on rapid closing requirements.`
           </div>
 
           {/* Right Panel - AI Chat */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-lg h-[calc(100vh-200px)] flex flex-col">
               {/* Chat Header */}
               <div className="border-b border-slate-200 p-4">
