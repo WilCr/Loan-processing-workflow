@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
-import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink, Upload, X, Save, FolderOpen, CheckCircle2 } from 'lucide-react';
 
 export default function HardMoneyLoanProcessor() {
   const resourcesRef = useRef(null);
+  const fileInputRef = useRef(null);
   const [currentStage, setCurrentStage] = useState(0);
   const [loanData, setLoanData] = useState({
+    loanId: '',
     propertyAddress: '',
     loanAmount: '',
     propertyValue: '',
@@ -15,7 +17,20 @@ export default function HardMoneyLoanProcessor() {
   const [chatMessages, setChatMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [stageNotes, setStageNotes] = useState({});
+  const [stageFiles, setStageFiles] = useState({
+    0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: []
+  });
+  const [dragActive, setDragActive] = useState(false);
+  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
+
+  // Generate Loan ID on component mount
+  useEffect(() => {
+    if (!loanData.loanId) {
+      const timestamp = Date.now();
+      const loanId = `LOAN-${timestamp}`;
+      setLoanData(prev => ({ ...prev, loanId }));
+    }
+  }, []);
 
   const scrollToResources = () => {
     resourcesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -51,6 +66,126 @@ export default function HardMoneyLoanProcessor() {
     if (!value) return '';
     // Remove commas and keep only numbers and decimal point
     return value.toString().replace(/,/g, '');
+  };
+
+  // Format file size
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  };
+
+  // Handle drag events
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  // Handle file drop
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFiles(e.dataTransfer.files);
+    }
+  };
+
+  // Handle file input change
+  const handleFileInput = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFiles(e.target.files);
+    }
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Process files and add to state
+  const handleFiles = (files) => {
+    const newFiles = Array.from(files).map(file => ({
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      uploadedAt: new Date().toISOString()
+    }));
+
+    setStageFiles(prev => ({
+      ...prev,
+      [currentStage]: [...prev[currentStage], ...newFiles]
+    }));
+  };
+
+  // Remove file from current stage
+  const removeFile = (fileId) => {
+    setStageFiles(prev => ({
+      ...prev,
+      [currentStage]: prev[currentStage].filter(file => file.id !== fileId)
+    }));
+  };
+
+  // Save loan data to JSON file
+  const saveLoanData = () => {
+    const dataToSave = {
+      loanData,
+      stageFiles,
+      chatMessages,
+      currentStage,
+      savedAt: new Date().toISOString()
+    };
+
+    const jsonString = JSON.stringify(dataToSave, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const date = new Date().toISOString().split('T')[0];
+    const filename = `${loanData.loanId}_${date}.json`;
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    // Show success notification
+    setShowSaveSuccess(true);
+    setTimeout(() => setShowSaveSuccess(false), 3000);
+  };
+
+  // Load loan data from JSON file
+  const loadLoanData = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const loadedData = JSON.parse(event.target.result);
+        
+        if (loadedData.loanData) setLoanData(loadedData.loanData);
+        if (loadedData.stageFiles) setStageFiles(loadedData.stageFiles);
+        if (loadedData.chatMessages) setChatMessages(loadedData.chatMessages);
+        if (typeof loadedData.currentStage === 'number') setCurrentStage(loadedData.currentStage);
+      } catch (error) {
+        alert('Error loading file: Invalid JSON format');
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset input
+    e.target.value = '';
   };
 
   const stages = [
@@ -117,6 +252,8 @@ Current loan details:
 - Loan Amount: ${loanData.loanAmount || 'Not specified'}
 - Borrower: ${loanData.borrowerName || 'Not specified'}
 - Type: ${loanData.loanType}
+
+The processor has uploaded ${stageFiles[0]?.length || 0} documents for this stage.
 
 Help the processor by:
 1. Providing a checklist of required documents
@@ -273,10 +410,13 @@ Focus on rapid closing requirements.`
       <div className="container mx-auto p-6 max-w-7xl">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-3xl font-bold text-slate-800 mb-2">Private Money Loan Processor AI</h1>
               <p className="text-slate-600">AI-powered workflow assistant for private money lending</p>
+              {loanData.loanId && (
+                <p className="text-sm text-slate-500 mt-1">Loan ID: {loanData.loanId}</p>
+              )}
             </div>
             <div className="flex items-center gap-3">
               <a
@@ -297,7 +437,35 @@ Focus on rapid closing requirements.`
               </button>
             </div>
           </div>
+          {/* Save/Load Buttons */}
+          <div className="flex items-center gap-3 pt-4 border-t border-slate-200">
+            <button
+              onClick={saveLoanData}
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <Save className="w-5 h-5" />
+              <span>Save Loan</span>
+            </button>
+            <label className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors cursor-pointer">
+              <FolderOpen className="w-5 h-5" />
+              <span>Load Loan</span>
+              <input
+                type="file"
+                accept=".json"
+                onChange={loadLoanData}
+                className="hidden"
+              />
+            </label>
+          </div>
         </div>
+
+        {/* Save Success Notification */}
+        {showSaveSuccess && (
+          <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 animate-fade-in">
+            <CheckCircle2 className="w-5 h-5" />
+            <span>Loan data saved successfully!</span>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Panel - Loan Info & Stages */}
@@ -391,24 +559,104 @@ Focus on rapid closing requirements.`
                   const Icon = stage.icon;
                   const isActive = stage.id === currentStage;
                   const colors = colorClasses[stage.color];
+                  const fileCount = stageFiles[stage.id]?.length || 0;
                   return (
                     <button
                       key={stage.id}
                       onClick={() => changeStage(stage.id)}
-                      className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all border-2 ${
+                      className={`w-full flex items-center justify-between gap-3 p-3 rounded-lg transition-all border-2 ${
                         isActive 
                           ? `${colors.bg} ${colors.border}` 
                           : 'bg-slate-50 hover:bg-slate-100 border-transparent'
                       }`}
                     >
-                      <Icon className={`w-5 h-5 ${isActive ? colors.text : 'text-slate-500'}`} />
-                      <span className={`font-medium ${isActive ? colors.textDark : 'text-slate-700'}`}>
-                        {stage.name}
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <Icon className={`w-5 h-5 ${isActive ? colors.text : 'text-slate-500'}`} />
+                        <span className={`font-medium ${isActive ? colors.textDark : 'text-slate-700'}`}>
+                          {stage.name}
+                        </span>
+                      </div>
+                      {fileCount > 0 && (
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          isActive ? 'bg-white text-blue-600' : 'bg-blue-100 text-blue-600'
+                        }`}>
+                          {fileCount}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
               </div>
+            </div>
+
+            {/* Document Upload Section */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-bold text-slate-800 mb-4">Documents</h2>
+              
+              {/* Drag and Drop Zone */}
+              <div
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                  dragActive 
+                    ? 'border-blue-500 bg-blue-50' 
+                    : 'border-slate-300 hover:border-slate-400'
+                }`}
+              >
+                <Upload className={`w-8 h-8 mx-auto mb-2 ${dragActive ? 'text-blue-500' : 'text-slate-400'}`} />
+                <p className="text-sm text-slate-600 mb-2">
+                  Drag and drop files here, or
+                </p>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                >
+                  browse files
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  onChange={handleFileInput}
+                  className="hidden"
+                />
+              </div>
+
+              {/* File List */}
+              {stageFiles[currentStage] && stageFiles[currentStage].length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <h3 className="text-sm font-semibold text-slate-700 mb-2">
+                    Uploaded Files ({stageFiles[currentStage].length})
+                  </h3>
+                  {stageFiles[currentStage].map((file) => (
+                    <div
+                      key={file.id}
+                      className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <FileText className="w-4 h-4 text-slate-500 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-slate-800 truncate">
+                            {file.name}
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {formatFileSize(file.size)}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removeFile(file.id)}
+                        className="ml-2 p-1 text-slate-400 hover:text-red-600 transition-colors flex-shrink-0"
+                        title="Remove file"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
