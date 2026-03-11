@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink, Upload, X, Save, FolderOpen, CheckCircle2 } from 'lucide-react';
+import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink, Upload, X, Save, FolderOpen, CheckCircle2, HelpCircle } from 'lucide-react';
 
 export default function HardMoneyLoanProcessor() {
   const resourcesRef = useRef(null);
@@ -628,41 +628,74 @@ Focus on rapid closing requirements.`
               </div>
             </div>
 
-            {/* Workflow Stages */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold text-slate-800 mb-4">Workflow Stages</h2>
-              <div className="space-y-2">
-                {stages.map((stage) => {
-                  const Icon = stage.icon;
-                  const isActive = stage.id === currentStage;
-                  const colors = colorClasses[stage.color];
-                  const fileCount = stageFiles[stage.id]?.length || 0;
-                  return (
-                    <button
-                      key={stage.id}
-                      onClick={() => changeStage(stage.id)}
-                      className={`w-full flex items-center justify-between gap-3 p-3 rounded-lg transition-all border-2 ${
-                        isActive 
-                          ? `${colors.bg} ${colors.border}` 
-                          : 'bg-slate-50 hover:bg-slate-100 border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className={`w-5 h-5 ${isActive ? colors.text : 'text-slate-500'}`} />
-                        <span className={`font-medium ${isActive ? colors.textDark : 'text-slate-700'}`}>
-                          {stage.name}
-                        </span>
-                      </div>
-                      {fileCount > 0 && (
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          isActive ? 'bg-white text-blue-600' : 'bg-blue-100 text-blue-600'
-                        }`}>
-                          {fileCount}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
+            {/* Workflow Stages and How to Use Side by Side */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Workflow Stages */}
+              <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <h2 className="text-xl font-bold text-slate-800 mb-4">Workflow Stages</h2>
+                <div className="space-y-2 flex-1">
+                  {stages.map((stage) => {
+                    const Icon = stage.icon;
+                    const isActive = stage.id === currentStage;
+                    const colors = colorClasses[stage.color];
+                    const fileCount = stageFiles[stage.id]?.length || 0;
+                    return (
+                      <button
+                        key={stage.id}
+                        onClick={() => changeStage(stage.id)}
+                        className={`w-full flex items-center justify-between gap-3 p-3 rounded-lg transition-all border-2 ${
+                          isActive 
+                            ? `${colors.bg} ${colors.border}` 
+                            : 'bg-slate-50 hover:bg-slate-100 border-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Icon className={`w-5 h-5 ${isActive ? colors.text : 'text-slate-500'}`} />
+                          <span className={`font-medium ${isActive ? colors.textDark : 'text-slate-700'}`}>
+                            {stage.name}
+                          </span>
+                        </div>
+                        {fileCount > 0 && (
+                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            isActive ? 'bg-white text-blue-600' : 'bg-blue-100 text-blue-600'
+                          }`}>
+                            {fileCount}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* How to Use */}
+              <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                <div className="flex items-center gap-2 mb-4">
+                  <HelpCircle className="w-6 h-6 text-blue-600" />
+                  <h2 className="text-xl font-bold text-slate-800">How to Use</h2>
+                </div>
+                <div className="space-y-3 text-sm text-slate-700 flex-1">
+                  <div>
+                    <p className="font-semibold text-slate-800 mb-1">1. Enter Loan Details</p>
+                    <p className="text-slate-600">Fill in borrower information, property address, loan amount, and property value. The LTV ratio will calculate automatically.</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-800 mb-1">2. Upload Documents</p>
+                    <p className="text-slate-600">Drag and drop files or click "browse files" to upload documents for the current workflow stage.</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-800 mb-1">3. Select Workflow Stage</p>
+                    <p className="text-slate-600">Click on any stage in the Workflow Stages list to switch between different stages of the loan process.</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-800 mb-1">4. Chat with AI Assistant</p>
+                    <p className="text-slate-600">Ask questions or request assistance in the chat interface. The AI provides stage-specific guidance based on your current workflow stage.</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-800 mb-1">5. Save Your Work</p>
+                    <p className="text-slate-600">Use the "Save Loan" button to export your loan data, documents, and chat history. Load it later using "Load Loan".</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
