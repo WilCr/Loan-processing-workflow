@@ -348,43 +348,36 @@ Focus on rapid closing requirements.`
     setIsLoading(true);
 
     try {
-      const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || process.env.REACT_APP_ANTHROPIC_API_KEY;
-      
-      if (!apiKey) {
-        throw new Error('API key not configured. Please set VITE_ANTHROPIC_API_KEY or REACT_APP_ANTHROPIC_API_KEY environment variable.');
-      }
+      const messages = [...chatMessages, newMessage].map(msg => ({
+        role: msg.role,
+        content: typeof msg.content === 'string' ? msg.content : msg.content
+      }));
 
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
           system: stagePrompts[currentStage],
-          messages: [...chatMessages, newMessage].map(msg => ({
-            role: msg.role,
-            content: typeof msg.content === 'string' ? msg.content : msg.content
-          }))
+          messages
         })
       });
 
+      const data = await response.json().catch(() => ({}));
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || `API error: ${response.status}`);
+        throw new Error(data.error || `API error: ${response.status}`);
       }
 
-      const data = await response.json();
-      const aiResponse = data.content.find(item => item.type === 'text')?.text || 'Sorry, I encountered an error.';
+      const aiResponse = data.text || 'Sorry, I encountered an error.';
       
       setChatMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
     } catch (error) {
+      const message = error.message === 'Failed to fetch'
+        ? 'Unable to reach the chat service. If deployed on Vercel, ensure the API route is configured and redeploy.'
+        : error.message;
       setChatMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: `Error: ${error.message}. Please check your API key configuration.` 
+        content: `Error: ${message}` 
       }]);
     } finally {
       setIsLoading(false);

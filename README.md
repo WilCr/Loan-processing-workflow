@@ -17,17 +17,15 @@ An AI-powered workflow assistant for private money lending, built with React and
    ```
 
 2. **Configure API Key**
-   - Copy `.env.example` to `.env`
-   - Add your Anthropic API key:
-     ```
-     VITE_ANTHROPIC_API_KEY=your_api_key_here
-     ```
+   - **Local development**: Copy `.env.example` to `.env` and add your Anthropic API key
+   - **Vercel deployment**: Add `VITE_ANTHROPIC_API_KEY` or `ANTHROPIC_API_KEY` in Project Settings → Environment Variables
    - Get your API key from [Anthropic Console](https://console.anthropic.com/)
 
 3. **Run Development Server**
    ```bash
    npm run dev
    ```
+   For local chat testing with the API proxy, use `vercel dev` instead.
 
 4. **Build for Production**
    ```bash
@@ -37,6 +35,8 @@ An AI-powered workflow assistant for private money lending, built with React and
 ## Project Structure
 
 ```
+├── api/
+│   └── chat.js                         # Vercel serverless function (Anthropic proxy)
 ├── src/
 │   ├── components/
 │   │   └── HardMoneyLoanProcessor.jsx  # Main component
