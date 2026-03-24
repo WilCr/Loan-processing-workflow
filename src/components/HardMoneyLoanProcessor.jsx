@@ -110,14 +110,15 @@ export default function HardMoneyLoanProcessor() {
     }
   };
 
-  // Process files and add to state
+  // Process files and add to state (store File object for analysis)
   const handleFiles = (files) => {
     const newFiles = Array.from(files).map(file => ({
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       name: file.name,
       size: file.size,
       type: file.type,
-      uploadedAt: new Date().toISOString()
+      uploadedAt: new Date().toISOString(),
+      file: file  // Store the actual File object for AI analysis
     }));
 
     setStageFiles(prev => ({
@@ -134,11 +135,15 @@ export default function HardMoneyLoanProcessor() {
     }));
   };
 
-  // Save loan data to JSON file
+  // Save loan data to JSON file (file content excluded - only metadata saved)
   const saveLoanData = () => {
+    const stageFilesToSave = {};
+    Object.keys(stageFiles).forEach(stage => {
+      stageFilesToSave[stage] = stageFiles[stage].map(({ file, ...meta }) => meta);
+    });
     const dataToSave = {
       loanData,
-      stageFiles,
+      stageFiles: stageFilesToSave,
       chatMessages,
       currentStage,
       savedAt: new Date().toISOString()
@@ -384,6 +389,108 @@ Focus on rapid closing requirements.`
     }
   };
 
+  // Analyze uploaded files with AI (business purpose detection, document classification, etc.)
+  const analyzeFiles = async (query) => {
+    if (!stageFiles[currentStage] || stageFiles[currentStage].length === 0) {
+      setChatMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'No files have been uploaded to this stage yet. Please upload files first.'
+      }]);
+      return;
+    }
+
+    setIsLoading(true);
+    const defaultQuery = 'Identify which documents indicate this is a business purpose loan. List each file name and explain your determination.';
+    const analysisMessage = { role: 'user', content: query || defaultQuery };
+    setChatMessages(prev => [...prev, analysisMessage]);
+
+    try {
+      const fileContents = [];
+
+      for (const fileData of stageFiles[currentStage]) {
+        if (!fileData.file) continue; // Skip files loaded from JSON (no File object)
+
+        const content = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+
+          if (fileData.type === 'application/pdf' || fileData.type.startsWith('image/')) {
+            reader.onload = (e) => {
+              const base64 = e.target.result.split(',')[1];
+              if (!base64) return resolve(null);
+              resolve({
+                type: 'image', // Anthropic uses 'image' for both PDF and images
+                source: {
+                  type: 'base64',
+                  media_type: fileData.type,
+                  data: base64
+                }
+              });
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(fileData.file);
+          } else if (fileData.type.startsWith('text/') || fileData.name.endsWith('.txt')) {
+            reader.onload = (e) => resolve({
+              type: 'text',
+              text: `File: ${fileData.name}\n\n${e.target.result}`
+            });
+            reader.onerror = reject;
+            reader.readAsText(fileData.file);
+          } else {
+            resolve(null);
+          }
+        });
+
+        if (content) fileContents.push(content);
+      }
+
+      if (fileContents.length === 0) {
+        const hasLoadedFiles = stageFiles[currentStage].some(f => !f.file);
+        const message = hasLoadedFiles
+          ? 'Files were loaded from a saved loan. Re-upload the files in this session to enable AI analysis. (File content is not saved for privacy.)'
+          : 'None of the uploaded files are in a supported format (PDF, images, or text files). Please upload PDFs, images (JPG, PNG, GIF, WebP), or .txt files.';
+        setChatMessages(prev => [...prev, { role: 'assistant', content: message }]);
+        setIsLoading(false);
+        return;
+      }
+
+      const fileNames = stageFiles[currentStage].map(f => f.name).join(', ');
+      const messageContent = [
+        {
+          type: 'text',
+          text: `I have ${stageFiles[currentStage].length} files uploaded. File names: ${fileNames}.\n\n${query || defaultQuery}`
+        },
+        ...fileContents
+      ];
+
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [{ role: 'user', content: messageContent }]
+        })
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error || `API error: ${response.status}`);
+      }
+
+      const aiResponse = data.text || 'Error analyzing files.';
+      setChatMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+    } catch (error) {
+      console.error('File analysis error:', error);
+      setChatMessages(prev => [...prev, {
+        role: 'assistant',
+        content: error.message === 'Failed to fetch'
+          ? 'Unable to reach the analysis service. Please ensure the API is configured.'
+          : `Error analyzing files: ${error.message}`
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const calculateLTV = () => {
     const loan = parseFloat(loanData.loanAmount);
     const value = parseFloat(loanData.propertyValue);
@@ -585,9 +692,19 @@ Focus on rapid closing requirements.`
                   {/* File List */}
                   {stageFiles[currentStage] && stageFiles[currentStage].length > 0 && (
                     <div className="mt-4 flex-1 flex flex-col min-h-0">
-                      <h3 className="text-sm font-semibold text-slate-700 mb-2">
-                        Uploaded Files ({stageFiles[currentStage].length})
-                      </h3>
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="text-sm font-semibold text-slate-700">
+                          Uploaded Files ({stageFiles[currentStage].length})
+                        </h3>
+                        <button
+                          onClick={() => analyzeFiles('Identify which documents indicate this is a business purpose loan. List each file name and explain your determination.')}
+                          disabled={isLoading}
+                          className="px-3 py-1 bg-purple-600 text-white text-xs rounded-lg hover:bg-purple-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors flex items-center gap-1"
+                        >
+                          <AlertCircle className="w-3 h-3" />
+                          Analyze Files
+                        </button>
+                      </div>
                       <div className="flex-1 overflow-y-auto space-y-2">
                         {stageFiles[currentStage].map((file) => (
                           <div
