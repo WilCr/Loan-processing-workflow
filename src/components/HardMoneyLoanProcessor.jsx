@@ -258,8 +258,6 @@ Current loan details:
 - Borrower: ${loanData.borrowerName || 'Not specified'}
 - Type: ${loanData.loanType}
 
-The processor has uploaded ${stageFiles[0]?.length || 0} documents for this stage.
-
 Help the processor by:
 1. Providing a checklist of required documents
 2. Answering questions about documentation requirements
@@ -344,6 +342,24 @@ Help the processor by:
 Focus on rapid closing requirements.`
   };
 
+  /** Appends per-stage filename list so chat can classify documents by name (full PDF/image analysis uses Analyze Files). */
+  const buildChatSystemPrompt = () => {
+    const files = stageFiles[currentStage] || [];
+    const count = files.length;
+    const fileLines =
+      count === 0
+        ? '(No files uploaded for this workflow stage.)'
+        : files.map((f, i) => `${i + 1}. ${f.name}`).join('\n');
+
+    return `${stagePrompts[currentStage]}
+
+---
+Uploaded files for this stage (${count}):
+${fileLines}
+
+You can see every filename above. Use them to infer likely document types (e.g. title, commitment, appraisal, credit) when names are descriptive. If names are ambiguous or the user needs analysis of PDF/image contents, tell them to use the purple "Analyze Files" button in the Documents panel. Do not claim you cannot see filenames—they are listed in this message.`;
+  };
+
   const handleSendMessage = async () => {
     if (!userInput.trim() || isLoading) return;
 
@@ -362,7 +378,7 @@ Focus on rapid closing requirements.`
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          system: stagePrompts[currentStage],
+          system: buildChatSystemPrompt(),
           messages
         })
       });
