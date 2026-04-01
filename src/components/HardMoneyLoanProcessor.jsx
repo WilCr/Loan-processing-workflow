@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink, Upload, X, Save, FolderOpen, CheckCircle2, HelpCircle } from 'lucide-react';
+import { FileText, CheckCircle, Circle, Send, Loader2, AlertCircle, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink, Upload, X, Save, FolderOpen, CheckCircle2, HelpCircle, Trash2 } from 'lucide-react';
 
 export default function HardMoneyLoanProcessor() {
   const resourcesRef = useRef(null);
@@ -132,6 +132,19 @@ export default function HardMoneyLoanProcessor() {
     setStageFiles(prev => ({
       ...prev,
       [currentStage]: prev[currentStage].filter(file => file.id !== fileId)
+    }));
+  };
+
+  const clearChat = () => {
+    setChatMessages([]);
+  };
+
+  const clearCurrentStageDocuments = () => {
+    if (!stageFiles[currentStage]?.length) return;
+    if (!window.confirm('Remove all uploaded files for this workflow stage? You can upload new documents afterward.')) return;
+    setStageFiles(prev => ({
+      ...prev,
+      [currentStage]: []
     }));
   };
 
@@ -727,7 +740,19 @@ You can see every filename above. Use them to infer likely document types (e.g. 
 
               {/* Document Upload Section */}
               <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col">
-                <h2 className="text-xl font-bold text-slate-800 mb-4">Documents</h2>
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <h2 className="text-xl font-bold text-slate-800">Documents</h2>
+                  <button
+                    type="button"
+                    onClick={clearCurrentStageDocuments}
+                    disabled={!stageFiles[currentStage]?.length}
+                    className="text-sm px-3 py-1.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
+                    title="Remove all files for this stage"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Clear
+                  </button>
+                </div>
                 
                 <div className="flex-1 flex flex-col">
                   {/* Drag and Drop Zone */}
@@ -887,14 +912,26 @@ You can see every filename above. Use them to infer likely document types (e.g. 
             <div className="bg-white rounded-lg shadow-lg h-[calc(100vh-200px)] flex flex-col">
               {/* Chat Header */}
               <div className="border-b border-slate-200 p-4">
-                <div className="flex items-center gap-3">
-                  {React.createElement(stages[currentStage].icon, { 
-                    className: `w-6 h-6 ${colorClasses[stages[currentStage].color].text}` 
-                  })}
-                  <div>
-                    <h2 className="text-xl font-bold text-slate-800">{stages[currentStage].name}</h2>
-                    <p className="text-sm text-slate-600">Ask questions or request assistance</p>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    {React.createElement(stages[currentStage].icon, { 
+                      className: `w-6 h-6 flex-shrink-0 ${colorClasses[stages[currentStage].color].text}` 
+                    })}
+                    <div className="min-w-0">
+                      <h2 className="text-xl font-bold text-slate-800">{stages[currentStage].name}</h2>
+                      <p className="text-sm text-slate-600">Ask questions or request assistance</p>
+                    </div>
                   </div>
+                  <button
+                    type="button"
+                    onClick={clearChat}
+                    disabled={isLoading || chatMessages.length === 0}
+                    className="text-sm px-3 py-1.5 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5 flex-shrink-0"
+                    title="Clear all messages in this chat"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Clear chat
+                  </button>
                 </div>
               </div>
 
