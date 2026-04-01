@@ -420,8 +420,38 @@ You can see every filename above. Use them to infer likely document types (e.g. 
     const analysisMessage = { role: 'user', content: query || defaultQuery };
     setChatMessages(prev => [...prev, analysisMessage]);
 
+    /** Vercel serverless request bodies are capped (~4.5MB). JSON + base64 needs a conservative per-request budget. */
+    const MAX_ANALYZE_MEDIA_BYTES = 2_400_000;
+
+    const estimateBlockBytes = (block) => {
+      if (block.type === 'text') return (block.text?.length || 0) * 2;
+      if (block.source?.data) return Math.ceil(block.source.data.length * 1.05);
+      return 0;
+    };
+
+    const chunkBlocksBySize = (namedBlocks, maxBytes) => {
+      const chunks = [];
+      let current = [];
+      let sum = 0;
+      for (const nb of namedBlocks) {
+        const b = estimateBlockBytes(nb.block);
+        if (b > maxBytes) {
+          return { error: `File "${nb.name}" is too large to send in one request (~${Math.round(b / 1e6)}MB encoded). Try a smaller PDF, fewer pages, or split into multiple files.` };
+        }
+        if (current.length && sum + b > maxBytes) {
+          chunks.push(current);
+          current = [];
+          sum = 0;
+        }
+        current.push(nb);
+        sum += b;
+      }
+      if (current.length) chunks.push(current);
+      return { chunks };
+    };
+
     try {
-      const fileContents = [];
+      const namedBlocks = [];
 
       for (const fileData of stageFiles[currentStage]) {
         if (!fileData.file) continue; // Skip files loaded from JSON (no File object)
@@ -456,10 +486,10 @@ You can see every filename above. Use them to infer likely document types (e.g. 
           }
         });
 
-        if (content) fileContents.push(content);
+        if (content) namedBlocks.push({ name: fileData.name, block: content });
       }
 
-      if (fileContents.length === 0) {
+      if (namedBlocks.length === 0) {
         const hasLoadedFiles = stageFiles[currentStage].some(f => !f.file);
         const message = hasLoadedFiles
           ? 'Files were loaded from a saved loan. Re-upload the files in this session to enable AI analysis. (File content is not saved for privacy.)'
@@ -470,30 +500,56 @@ You can see every filename above. Use them to infer likely document types (e.g. 
       }
 
       const fileNames = stageFiles[currentStage].map(f => f.name).join(', ');
-      const messageContent = [
-        {
-          type: 'text',
-          text: `I have ${stageFiles[currentStage].length} files uploaded. File names: ${fileNames}.\n\n${query || defaultQuery}`
-        },
-        ...fileContents
-      ];
-
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: messageContent }]
-        })
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.error || `API error: ${response.status}`);
+      const q = query || defaultQuery;
+      const { chunks, error: chunkError } = chunkBlocksBySize(namedBlocks, MAX_ANALYZE_MEDIA_BYTES);
+      if (chunkError) {
+        setChatMessages(prev => [...prev, { role: 'assistant', content: chunkError }]);
+        setIsLoading(false);
+        return;
       }
 
-      const aiResponse = data.text || 'Error analyzing files.';
-      setChatMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+      const parts = [];
+      for (let i = 0; i < chunks.length; i++) {
+        const batch = chunks[i];
+        const namesInBatch = batch.map((x) => x.name).join(', ');
+        const intro =
+          chunks.length === 1
+            ? `I have ${stageFiles[currentStage].length} files uploaded. File names: ${fileNames}.\n\n${q}`
+            : `Part ${i + 1} of ${chunks.length} (this request only includes: ${namesInBatch}). All files in this stage: ${fileNames}.\n\nAnswer for these files now; other parts are analyzed separately.\n\n${q}`;
+
+        const messageContent = [{ type: 'text', text: intro }, ...batch.map((x) => x.block)];
+
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [{ role: 'user', content: messageContent }]
+          })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          const detail =
+            response.status === 413
+              ? 'Payload too large (413). Try fewer or smaller files, or split large PDFs.'
+              : data.error || `API error: ${response.status}`;
+          throw new Error(detail);
+        }
+
+        const aiResponse = data.text || 'Error analyzing files.';
+        if (chunks.length > 1) {
+          parts.push(`**Part ${i + 1} of ${chunks.length}** (${namesInBatch})\n\n${aiResponse}`);
+        } else {
+          parts.push(aiResponse);
+        }
+      }
+
+      const combined =
+        parts.length === 1
+          ? parts[0]
+          : `${parts.join('\n\n---\n\n')}\n\n---\n\nIf needed, compare the parts above for documents that appear in different batches.`;
+      setChatMessages(prev => [...prev, { role: 'assistant', content: combined }]);
     } catch (error) {
       console.error('File analysis error:', error);
       setChatMessages(prev => [...prev, {
