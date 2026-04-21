@@ -592,7 +592,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-300 to-slate-400">
-      <div className="container mx-auto p-6 max-w-7xl">
+      <div className="w-full max-w-none mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
@@ -652,94 +652,93 @@ You can see every filename above. Use them to infer likely document types (e.g. 
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          {/* Left Panel - Loan Info & Stages */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Loan Details and Documents Side by Side */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Loan Details */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold text-slate-800 mb-4">Loan Details</h2>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Borrower Name</label>
-                    <input
-                      type="text"
-                      value={loanData.borrowerName}
-                      onChange={(e) => setLoanData({...loanData, borrowerName: e.target.value})}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Property Address</label>
-                    <input
-                      type="text"
-                      value={loanData.propertyAddress}
-                      onChange={(e) => setLoanData({...loanData, propertyAddress: e.target.value})}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="123 Main St, City, ST"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Loan Type</label>
-                    <select
-                      value={loanData.loanType}
-                      onChange={(e) => setLoanData({...loanData, loanType: e.target.value})}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="purchase">Purchase</option>
-                      <option value="refinance">Refinance</option>
-                      <option value="fix-and-flip">Fix & Flip</option>
-                      <option value="bridge">Bridge Loan</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Loan Amount ($)</label>
-                    <input
-                      type="text"
-                      value={formatCurrency(loanData.loanAmount)}
-                      onChange={(e) => {
-                        const parsed = parseCurrency(e.target.value);
-                        setLoanData({...loanData, loanAmount: parsed});
-                      }}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="250,000.00"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Property Value ($)</label>
-                    <input
-                      type="text"
-                      value={formatCurrency(loanData.propertyValue)}
-                      onChange={(e) => {
-                        const parsed = parseCurrency(e.target.value);
-                        setLoanData({...loanData, propertyValue: parsed});
-                      }}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="350,000.00"
-                    />
-                  </div>
-                  {calculateLTV() && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                      <p className="text-sm font-medium text-blue-800">LTV Ratio: {calculateLTV()}%</p>
-                    </div>
-                  )}
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Exit Strategy</label>
-                    <input
-                      type="text"
-                      value={loanData.exitStrategy}
-                      onChange={(e) => setLoanData({...loanData, exitStrategy: e.target.value})}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Sale after rehab"
-                    />
-                  </div>
+        {/* Loan Details — full width (wireframe: below nav) */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6 w-full min-w-0">
+          <h2 className="text-xl font-bold text-slate-800 mb-4">Loan Details</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-3">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Borrower Name</label>
+              <input
+                type="text"
+                value={loanData.borrowerName}
+                onChange={(e) => setLoanData({...loanData, borrowerName: e.target.value})}
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="John Doe"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Property Address</label>
+              <input
+                type="text"
+                value={loanData.propertyAddress}
+                onChange={(e) => setLoanData({...loanData, propertyAddress: e.target.value})}
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="123 Main St, City, ST"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Loan Type</label>
+              <select
+                value={loanData.loanType}
+                onChange={(e) => setLoanData({...loanData, loanType: e.target.value})}
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="purchase">Purchase</option>
+                <option value="refinance">Refinance</option>
+                <option value="fix-and-flip">Fix & Flip</option>
+                <option value="bridge">Bridge Loan</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Loan Amount ($)</label>
+              <input
+                type="text"
+                value={formatCurrency(loanData.loanAmount)}
+                onChange={(e) => {
+                  const parsed = parseCurrency(e.target.value);
+                  setLoanData({...loanData, loanAmount: parsed});
+                }}
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="250,000.00"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Property Value ($)</label>
+              <input
+                type="text"
+                value={formatCurrency(loanData.propertyValue)}
+                onChange={(e) => {
+                  const parsed = parseCurrency(e.target.value);
+                  setLoanData({...loanData, propertyValue: parsed});
+                }}
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="350,000.00"
+              />
+            </div>
+            {calculateLTV() && (
+              <div className="flex items-end">
+                <div className="w-full bg-blue-50 border border-blue-200 rounded-md p-3">
+                  <p className="text-sm font-medium text-blue-800">LTV Ratio: {calculateLTV()}%</p>
                 </div>
               </div>
+            )}
+            <div className="sm:col-span-2 xl:col-span-3">
+              <label className="block text-sm font-medium text-slate-700 mb-1">Exit Strategy</label>
+              <input
+                type="text"
+                value={loanData.exitStrategy}
+                onChange={(e) => setLoanData({...loanData, exitStrategy: e.target.value})}
+                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Sale after rehab"
+              />
+            </div>
+          </div>
+        </div>
 
-              {/* Document Upload Section */}
-              <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+        {/* Wireframe: left column ≈31% (Documents, Workflow); right ≈69% (stage chat, How to Use) */}
+        <div className="grid grid-cols-1 lg:grid-cols-[31fr_69fr] gap-6 lg:items-stretch">
+          {/* Documents */}
+          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col min-w-0 w-full">
                 <div className="flex items-center justify-between gap-2 mb-4">
                   <h2 className="text-xl font-bold text-slate-800">Documents</h2>
                   <button
@@ -832,84 +831,10 @@ You can see every filename above. Use them to infer likely document types (e.g. 
                     </div>
                   )}
                 </div>
-              </div>
-            </div>
-
-            {/* Workflow Stages and How to Use Side by Side */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Workflow Stages */}
-              <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col">
-                <h2 className="text-xl font-bold text-slate-800 mb-4">Workflow Stages</h2>
-                <div className="space-y-2 flex-1">
-                  {stages.map((stage) => {
-                    const Icon = stage.icon;
-                    const isActive = stage.id === currentStage;
-                    const colors = colorClasses[stage.color];
-                    const fileCount = stageFiles[stage.id]?.length || 0;
-                    return (
-                      <button
-                        key={stage.id}
-                        onClick={() => changeStage(stage.id)}
-                        className={`w-full flex items-center justify-between gap-3 p-3 rounded-lg transition-all border-2 ${
-                          isActive 
-                            ? `${colors.bg} ${colors.border}` 
-                            : 'bg-slate-50 hover:bg-slate-100 border-transparent'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Icon className={`w-5 h-5 ${isActive ? colors.text : 'text-slate-500'}`} />
-                          <span className={`font-medium ${isActive ? colors.textDark : 'text-slate-700'}`}>
-                            {stage.name}
-                          </span>
-                        </div>
-                        {fileCount > 0 && (
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            isActive ? 'bg-white text-blue-600' : 'bg-blue-100 text-blue-600'
-                          }`}>
-                            {fileCount}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* How to Use */}
-              <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col">
-                <div className="flex items-center gap-2 mb-4">
-                  <HelpCircle className="w-6 h-6 text-blue-600" />
-                  <h2 className="text-xl font-bold text-slate-800">How to Use</h2>
-                </div>
-                <div className="space-y-3 text-sm text-slate-700 flex-1">
-                  <div>
-                    <p className="font-semibold text-slate-800 mb-1">1. Enter Loan Details</p>
-                    <p className="text-slate-600">Fill in borrower information, property address, loan amount, and property value. The LTV ratio will calculate automatically.</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-800 mb-1">2. Upload Documents</p>
-                    <p className="text-slate-600">Drag and drop files or click "browse files" to upload documents for the current workflow stage.</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-800 mb-1">3. Select Workflow Stage</p>
-                    <p className="text-slate-600">Click on any stage in the Workflow Stages list to switch between different stages of the loan process.</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-800 mb-1">4. Chat with AI Assistant</p>
-                    <p className="text-slate-600">Ask questions or request assistance in the chat interface. The AI provides stage-specific guidance based on your current workflow stage.</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-800 mb-1">5. Save Your Work</p>
-                    <p className="text-slate-600">Use the "Save Loan" button to export your loan data, documents, and chat history. Load it later using "Load Loan".</p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* Right Panel - AI Chat */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg h-[calc(100vh-200px)] flex flex-col">
+          {/* Stage assistant — wireframe "Application & Docs" panel (title follows selected stage) */}
+          <div className="bg-white rounded-lg shadow-lg min-h-[min(70vh,720px)] lg:min-h-[calc(100vh-260px)] flex flex-col min-w-0 w-full">
               {/* Chat Header */}
               <div className="border-b border-slate-200 p-4">
                 <div className="flex items-start justify-between gap-3">
@@ -946,11 +871,11 @@ You can see every filename above. Use them to infer likely document types (e.g. 
                 )}
                 
                 {chatMessages.map((msg, idx) => (
-                  <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-3xl rounded-lg p-4 ${
-                      msg.role === 'user' 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-slate-100 text-slate-800'
+                  <div key={idx} className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`rounded-lg p-4 ${
+                      msg.role === 'user'
+                        ? 'bg-blue-600 text-white max-w-[min(92%,42rem)]'
+                        : 'bg-slate-100 text-slate-800 w-full max-w-[min(100%,72rem)]'
                     }`}>
                       <p className="whitespace-pre-wrap">{msg.content}</p>
                     </div>
@@ -987,6 +912,73 @@ You can see every filename above. Use them to infer likely document types (e.g. 
                   </button>
                 </div>
               </div>
+          </div>
+
+          {/* Workflow Stages */}
+          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col min-w-0 w-full">
+            <h2 className="text-xl font-bold text-slate-800 mb-4">Workflow Stages</h2>
+            <div className="space-y-2 flex-1">
+              {stages.map((stage) => {
+                const Icon = stage.icon;
+                const isActive = stage.id === currentStage;
+                const colors = colorClasses[stage.color];
+                const fileCount = stageFiles[stage.id]?.length || 0;
+                return (
+                  <button
+                    key={stage.id}
+                    onClick={() => changeStage(stage.id)}
+                    className={`w-full flex items-center justify-between gap-3 p-3 rounded-lg transition-all border-2 ${
+                      isActive 
+                        ? `${colors.bg} ${colors.border}` 
+                        : 'bg-slate-50 hover:bg-slate-100 border-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? colors.text : 'text-slate-500'}`} />
+                      <span className={`font-medium text-left truncate ${isActive ? colors.textDark : 'text-slate-700'}`}>
+                        {stage.name}
+                      </span>
+                    </div>
+                    {fileCount > 0 && (
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold flex-shrink-0 ${
+                        isActive ? 'bg-white text-blue-600' : 'bg-blue-100 text-blue-600'
+                      }`}>
+                        {fileCount}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* How to Use */}
+          <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col min-w-0 w-full">
+            <div className="flex items-center gap-2 mb-4">
+              <HelpCircle className="w-6 h-6 text-blue-600 flex-shrink-0" />
+              <h2 className="text-xl font-bold text-slate-800">How to Use</h2>
+            </div>
+            <div className="space-y-3 text-sm text-slate-700 flex-1">
+              <div>
+                <p className="font-semibold text-slate-800 mb-1">1. Enter Loan Details</p>
+                <p className="text-slate-600">Fill in borrower information, property address, loan amount, and property value. The LTV ratio will calculate automatically.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-slate-800 mb-1">2. Upload Documents</p>
+                <p className="text-slate-600">Drag and drop files or click "browse files" to upload documents for the current workflow stage.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-slate-800 mb-1">3. Select Workflow Stage</p>
+                <p className="text-slate-600">Click on any stage in the Workflow Stages list to switch between different stages of the loan process.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-slate-800 mb-1">4. Chat with AI Assistant</p>
+                <p className="text-slate-600">Ask questions or request assistance in the chat interface. The AI provides stage-specific guidance based on your current workflow stage.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-slate-800 mb-1">5. Save Your Work</p>
+                <p className="text-slate-600">Use the "Save Loan" button to export your loan data, documents, and chat history. Load it later using "Load Loan".</p>
+              </div>
             </div>
           </div>
         </div>
@@ -998,9 +990,9 @@ You can see every filename above. Use them to infer likely document types (e.g. 
             <p className="text-slate-600">Tools and resources to help optimize your treasury operations and investor relations.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
             {/* Free Web App Card */}
-            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow w-full min-w-0">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-blue-600 rounded-lg flex items-center justify-center">
                   <Rocket className="w-8 h-8 text-white" />
@@ -1014,7 +1006,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
             </div>
 
             {/* Knowledge Base Card */}
-            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow w-full min-w-0">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-green-500 via-red-500 to-blue-600 rounded-lg flex items-center justify-center">
                   <Layers className="w-8 h-8 text-white" />
@@ -1028,7 +1020,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
             </div>
 
             {/* Tools & Templates Card */}
-            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow w-full min-w-0">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-green-500 via-pink-500 to-blue-600 rounded-lg flex items-center justify-center">
                   <BarChart3 className="w-8 h-8 text-white" />
