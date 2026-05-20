@@ -595,7 +595,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
     'rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500/25';
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-slate-900 antialiased">
+    <div className="min-h-screen bg-[#E8EAED] text-slate-900 antialiased">
       {/* Save Success Notification */}
       {showSaveSuccess && (
         <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-white shadow-lg animate-fade-in">
