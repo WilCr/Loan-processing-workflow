@@ -1055,17 +1055,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
               <p className="text-slate-600 mb-4 text-center text-sm">
                 Downloadable templates and tools to help you manage cash flow, track distributions, and optimize processes.
               </p>
-              <div className="mt-4">
-                <a 
-                  href="https://tools.curvedspace.us" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 text-sm font-medium text-violet-600 hover:text-violet-800"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  <span>Access Loan Processor AI Tool</span>
-                </a>
-              </div>
+              <p className="text-slate-400 text-sm text-center">Coming soon.</p>
             </div>
           </div>
         </div>
