@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FileText, CheckCircle, Send, Loader2, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink, Upload, X, Save, FolderOpen, CheckCircle2, Trash2, ChevronUp, Sparkles, Download } from 'lucide-react';
+import { FileText, CheckCircle, Send, Loader2, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink, Upload, X, Save, FolderOpen, CheckCircle2, Trash2, ChevronUp, Sparkles } from 'lucide-react';
 
 export default function HardMoneyLoanProcessor() {
   const resourcesRef = useRef(null);
@@ -600,7 +600,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
       {showSaveSuccess && (
         <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-white shadow-lg animate-fade-in">
           <CheckCircle2 className="h-5 w-5 shrink-0" />
-          <span className="text-sm font-medium">Loan exported successfully.</span>
+          <span className="text-sm font-medium">Session saved successfully.</span>
         </div>
       )}
 
@@ -638,7 +638,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
               className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-violet-700/15 transition hover:bg-violet-700"
             >
               <Save className="h-4 w-4" />
-              Export loan
+              Save session
             </button>
             <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50">
               <FolderOpen className="h-4 w-4 text-slate-500" />
@@ -663,7 +663,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
               Stage-aware guidance
             </span>
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
-              Export / resume JSON
+              Save session
             </span>
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
               PDF &amp; images for analysis
@@ -897,8 +897,8 @@ You can see every filename above. Use them to infer likely document types (e.g. 
             onClick={saveLoanData}
             className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
           >
-            <Download className="h-4 w-4 text-slate-600" />
-            Download JSON
+            <Save className="h-4 w-4 text-slate-600" />
+            Save session
           </button>
           <button
             type="button"
@@ -917,7 +917,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
             <li>Fill in loan details, then choose a workflow stage from the dropdown.</li>
             <li>Upload documents for that stage; use Analyze files when you need AI review of PDFs or images.</li>
             <li>Chat is scoped to the selected stage — switch stages to reset the conversation.</li>
-            <li>Export loan downloads metadata and chat (re-upload files after loading JSON).</li>
+            <li>Save session downloads a JSON file with your loan fields, filenames, chat, and stage (re-upload files after loading).</li>
           </ol>
         </details>
 
@@ -997,7 +997,7 @@ You can see every filename above. Use them to infer likely document types (e.g. 
                 </button>
               </div>
               <p className="mt-3 text-center text-xs text-slate-500">
-                Messages stay in this browser session until you export. Enter sends your question.
+                Messages stay in this browser session until you save it. Enter sends your question.
               </p>
             </div>
           </div>
