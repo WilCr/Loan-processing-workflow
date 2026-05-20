@@ -663,9 +663,6 @@ You can see every filename above. Use them to infer likely document types (e.g. 
               Stage-aware guidance
             </span>
             <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
-              Save session
-            </span>
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
               PDF &amp; images for analysis
             </span>
           </div>
@@ -891,14 +888,6 @@ You can see every filename above. Use them to infer likely document types (e.g. 
           >
             <Sparkles className="h-4 w-4" />
             Analyze files
-          </button>
-          <button
-            type="button"
-            onClick={saveLoanData}
-            className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
-          >
-            <Save className="h-4 w-4 text-slate-600" />
-            Save session
           </button>
           <button
             type="button"
