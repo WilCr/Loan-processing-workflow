@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FileText, CheckCircle, Send, Loader2, Calculator, Home, FileCheck, DollarSign, BookOpen, Rocket, Layers, BarChart3, ExternalLink, Upload, X, Save, FolderOpen, CheckCircle2, Trash2, ChevronUp, Sparkles } from 'lucide-react';
+import { FileText, CheckCircle, Send, Loader2, Calculator, Home, FileCheck, DollarSign, BookOpen, Layers, BarChart3, ExternalLink, Upload, X, Save, FolderOpen, CheckCircle2, Trash2, ChevronUp, Sparkles } from 'lucide-react';
 
 export default function HardMoneyLoanProcessor() {
   const resourcesRef = useRef(null);
@@ -1006,18 +1006,28 @@ You can see every filename above. Use them to infer likely document types (e.g. 
           </div>
 
           <div className="grid w-full grid-cols-1 gap-6 lg:grid-cols-3">
-            {/* Free Web App Card */}
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md w-full min-w-0">
+            {/* AI File Renamer */}
+            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md w-full min-w-0 flex flex-col">
               <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-blue-600 rounded-lg flex items-center justify-center">
-                  <Rocket className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-8 h-8 text-white" />
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-800 mb-2 text-center">Free Web App</h3>
-              <p className="text-slate-600 mb-4 text-center text-sm">
-                Coming soon! A powerful web application to streamline your treasury management workflows.
+              <h3 className="text-xl font-bold text-slate-800 mb-2 text-center">AI File Renamer</h3>
+              <p className="text-slate-600 mb-4 text-center text-sm flex-1">
+                Upload files or drag-and-drop, get clearer filenames suggested with AI from your filenames and context, tweak if needed, then download the batch—all in the browser workflow you already use for renaming at scale.
               </p>
-              <p className="text-slate-400 text-sm text-center">Available soon</p>
+              <div className="mt-auto">
+                <a
+                  href="https://file-rename-chi.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 text-sm font-semibold text-violet-600 hover:text-violet-800"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Open AI File Renamer
+                </a>
+              </div>
             </div>
 
             {/* Knowledge Base Card */}
